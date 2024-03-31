@@ -1,6 +1,6 @@
-﻿using SKitLs.Bots.Telegram.Core.Model.Interactions;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
+﻿using SKitLs.Bots.Telegram.Core.Interactions;
 using SKitLs.Bots.Telegram.Core.Prototype;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
 
 namespace SKitLs.Bots.Telegram.Stateful.Prototype
 {

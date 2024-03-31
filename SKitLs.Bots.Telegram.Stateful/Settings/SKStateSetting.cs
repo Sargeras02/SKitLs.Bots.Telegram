@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SKitLs.Bots.Telegram.Stateful.resources.settings
+﻿namespace SKitLs.Bots.Telegram.Stateful.Settings
 {
     /// <summary>
     /// The <see cref="SKStateSetting"/> class provides settings related to the SKitLs.Bots.Telegram.Stateful extension.

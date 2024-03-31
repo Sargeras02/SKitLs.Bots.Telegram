@@ -1,5 +1,5 @@
 ﻿using SKitLs.Bots.Telegram.Core.Exceptions;
-using SKitLs.Bots.Telegram.Stateful.resources.settings;
+using SKitLs.Bots.Telegram.Stateful.Settings;
 
 namespace SKitLs.Bots.Telegram.Stateful.Exceptions
 {

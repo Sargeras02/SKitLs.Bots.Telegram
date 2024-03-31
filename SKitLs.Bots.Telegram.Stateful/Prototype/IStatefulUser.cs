@@ -1,4 +1,4 @@
-﻿using SKitLs.Bots.Telegram.Core.Prototype;
+﻿using SKitLs.Bots.Telegram.Core.Users;
 
 namespace SKitLs.Bots.Telegram.Stateful.Prototype
 {

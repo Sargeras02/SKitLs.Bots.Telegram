@@ -1,8 +1,8 @@
-﻿using SKitLs.Bots.Telegram.Core.Model.Building;
-using SKitLs.Bots.Telegram.Core.Model.Interactions;
-using SKitLs.Bots.Telegram.Core.Model.Management;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
+﻿using SKitLs.Bots.Telegram.Core.Building;
+using SKitLs.Bots.Telegram.Core.Interactions;
+using SKitLs.Bots.Telegram.Core.Management;
 using SKitLs.Bots.Telegram.Core.Prototype;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
 
 namespace SKitLs.Bots.Telegram.Stateful.Prototype
 {
@@ -13,7 +13,7 @@ namespace SKitLs.Bots.Telegram.Stateful.Prototype
     /// <para>
     /// Fourth level of architecture, serves as an addon for <see cref="IActionManager{TUpdate}"/>.
     /// </para>
-    /// <para>Inherits: <see cref="IOwnerCompilable"/>, <see cref="IActionsHolder"/></para>
+    /// <para>Inherits: <see cref="IOwnerCompilable"/>, <see cref="IBotActionsHolder"/></para>
     /// </summary>
     /// <typeparam name="TUpdate">The specific casted update that this manager should work with.</typeparam>
     public interface IStatefulActionManager<TUpdate> : IOwnerCompilable, IActionManager<TUpdate> where TUpdate : ICastedUpdate

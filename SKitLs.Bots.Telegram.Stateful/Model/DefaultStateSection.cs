@@ -1,9 +1,8 @@
 ﻿using SKitLs.Bots.Telegram.Core.Exceptions.External;
-using SKitLs.Bots.Telegram.Core.Model.Interactions;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
+using SKitLs.Bots.Telegram.Core.Interactions;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
 using System.Collections;
-using System.Collections.ObjectModel;
 
 namespace SKitLs.Bots.Telegram.Stateful.Model
 {

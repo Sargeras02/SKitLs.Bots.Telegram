@@ -1,11 +1,10 @@
-﻿using SKitLs.Bots.Telegram.Core.Exceptions.Inexternal;
+﻿using SKitLs.Bots.Telegram.Core.Building;
+using SKitLs.Bots.Telegram.Core.Exceptions.Inexternal;
+using SKitLs.Bots.Telegram.Core.Interactions;
 using SKitLs.Bots.Telegram.Core.Model;
-using SKitLs.Bots.Telegram.Core.Model.Building;
-using SKitLs.Bots.Telegram.Core.Model.Interactions;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
 using SKitLs.Bots.Telegram.Stateful.Exceptions.Inexternal;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
-using System.Collections.ObjectModel;
 
 namespace SKitLs.Bots.Telegram.Stateful.Model
 {
