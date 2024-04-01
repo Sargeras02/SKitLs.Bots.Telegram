@@ -1,7 +1,6 @@
 ﻿using SKitLs.Bots.Telegram.BotProcesses.Prototype;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
 using SKitLs.Bots.Telegram.Core.Exceptions.External;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
 using SKitLs.Bots.Telegram.Stateful.Exceptions.Inexternal;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
 
@@ -20,7 +19,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model
         /// The unique process IDs act as keys, allowing quick and efficient access to specific processes based on their IDs.
         /// Developers can add, remove, or modify bot processes in this dictionary, effectively defining the available processes within the application.
         /// </remarks>
-        private Dictionary<string, IBotProcess> DefinedProcesses { get; set; } = new();
+        private Dictionary<string, IBotProcess> DefinedProcesses { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the dictionary of running bot processes with the user's unique identifiers as keys.

@@ -1,4 +1,5 @@
 ﻿using SKitLs.Bots.Telegram.AdvancedMessages.Model.Messages.Text;
+using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
 using SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Shot;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
@@ -15,7 +16,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Util
         /// <param name="processData">The process's main data.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
         public TerminatorProcess(IST processData, ProcessCompletedByInput<TResult> overByInput)
-            : base(processData, (a, u) => new OutputMessageText(StartupText), overByInput) { }
+            : base(processData, async (a, u) => await Task.FromResult(new OutputMessageText(StartupText)), overByInput) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="ShotInputProcess{TResult}"/> class with the specified parameters.
         /// </summary>
@@ -24,15 +25,15 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Util
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
         public TerminatorProcess(string processDefId, IUserState processState, string terminationalKey, ProcessCompletedByInput<TResult> overByInput)
-            : base(processDefId, processState, terminationalKey, (a, u) => new OutputMessageText(StartupText), overByInput) { }
+            : base(processDefId, processState, terminationalKey, async (a, u) => await Task.FromResult(new OutputMessageText(StartupText)), overByInput) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShotInputProcess{TResult}"/> class with the specified parameters.
         /// </summary>
         /// <param name="processData">The process's main data.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public TerminatorProcess(IST processData, ProcessCompletedByCallback<TResult> overByCallback)
-            : base(processData, (a, u) => new OutputMessageText(StartupText), overByCallback) { }
+        public TerminatorProcess(IST processData, ProcessCompletedByCallback<TResult> overByCallback, DynamicArg<TResult, IOutputMessage>? confirmMessage = null)
+            : base(processData, async (a, u) => await Task.FromResult(new OutputMessageText(StartupText)), overByCallback, confirmMessage) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="ShotInputProcess{TResult}"/> class with the specified parameters.
         /// </summary>
@@ -40,8 +41,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Util
         /// <param name="terminationalKey">The key used to stop and terminate the bot process.</param>
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public TerminatorProcess(string processDefId, IUserState processState, string terminationalKey, ProcessCompletedByCallback<TResult> overByCallback)
-            : base(processDefId, processState, terminationalKey, (a, u) => new OutputMessageText(StartupText), overByCallback) { }
+        public TerminatorProcess(string processDefId, IUserState processState, string terminationalKey, ProcessCompletedByCallback<TResult> overByCallback, DynamicArg<TResult, IOutputMessage>? confirmMessage = null)
+            : base(processDefId, processState, terminationalKey, async (a, u) => await Task.FromResult(new OutputMessageText(StartupText)), overByCallback, confirmMessage) { }
 
         /// <summary>
         /// Creates new running bot process instance based on the specified user and arguments.

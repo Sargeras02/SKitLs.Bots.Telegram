@@ -1,4 +1,5 @@
-﻿using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation;
+﻿using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
+using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
 
@@ -24,13 +25,15 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// </summary>
         public IReadOnlyList<PartialSubProcess<TResult>> SubProcesses => subProcesses.OrderBy(x => x.SubOrder).ToList();
 
+        public bool SkipProcessStartupMessage { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialInputProcess{TResult}"/> class with the specified parameters.
         /// </summary>
         /// <param name="processData">The process's main data.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
-        public PartialInputProcess(IST processData, DynamicArg<TResult> startupMessage, ProcessCompletedByInput<TResult> overByInput)
+        public PartialInputProcess(IST processData, DynamicArg<TResult, IOutputMessage> startupMessage, ProcessCompletedByInput<TResult> overByInput)
             : base(processData, startupMessage, overByInput) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialInputProcess{TResult}"/> class with the specified parameters.
@@ -40,7 +43,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
-        public PartialInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<TResult> startupMessage, ProcessCompletedByInput<TResult> overByInput)
+        public PartialInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<TResult, IOutputMessage> startupMessage, ProcessCompletedByInput<TResult> overByInput)
             : base(processDefId, processState, terminationalKey, startupMessage, overByInput) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialInputProcess{TResult}"/> class with the specified parameters.
@@ -48,8 +51,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// <param name="processData">The process's main data.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public PartialInputProcess(IST processData, DynamicArg<TResult> startupMessage, ProcessCompletedByCallback<TResult> overByCallback)
-            : base(processData, startupMessage, overByCallback) { }
+        public PartialInputProcess(IST processData, DynamicArg<TResult, IOutputMessage> startupMessage, ProcessCompletedByCallback<TResult> overByCallback, DynamicArg<TResult, IOutputMessage>? confirmMessage = null)
+            : base(processData, startupMessage, overByCallback, confirmMessage) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="PartialInputProcess{TResult}"/> class with the specified parameters.
         /// </summary>
@@ -58,8 +61,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public PartialInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<TResult> startupMessage, ProcessCompletedByCallback<TResult> overByCallback)
-            : base(processDefId, processState, terminationalKey, startupMessage, overByCallback) { }
+        public PartialInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<TResult, IOutputMessage> startupMessage, ProcessCompletedByCallback<TResult> overByCallback, DynamicArg<TResult, IOutputMessage>? confirmMessage = null)
+            : base(processDefId, processState, terminationalKey, startupMessage, overByCallback, confirmMessage) { }
 
         /// <summary>
         /// Adds sub-process to internal storage.

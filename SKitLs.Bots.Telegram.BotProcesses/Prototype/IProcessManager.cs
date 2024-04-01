@@ -1,6 +1,5 @@
 ﻿using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
-using SKitLs.Bots.Telegram.Core.Exceptions.External;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
 
 namespace SKitLs.Bots.Telegram.BotProcesses.Prototype

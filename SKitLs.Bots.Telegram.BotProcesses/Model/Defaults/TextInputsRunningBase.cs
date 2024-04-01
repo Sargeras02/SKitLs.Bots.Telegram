@@ -1,5 +1,9 @@
 ﻿using SKitLs.Bots.Telegram.AdvancedMessages.Model;
+using SKitLs.Bots.Telegram.AdvancedMessages.Model.Buttons.Reply;
+using SKitLs.Bots.Telegram.AdvancedMessages.Model.Menus;
+using SKitLs.Bots.Telegram.AdvancedMessages.Model.Menus.Reply;
 using SKitLs.Bots.Telegram.AdvancedMessages.Model.Messages.Text;
+using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
 using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation.Model;
 using SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Confirm;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype;
@@ -9,6 +13,8 @@ using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
 using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting.Signed;
 using SKitLs.Bots.Telegram.Stateful.Exceptions.Inexternal;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
+using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
 {
@@ -60,7 +66,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
         /// <summary>
         /// Represents the startup message of the bot process.
         /// </summary>
-        public virtual DynamicArg<TResult> StartupMessage => Launcher.StartupMessage;
+        public virtual DynamicArg<TResult, IOutputMessage> StartupMessage => Launcher.StartupMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextInputsRunningBase{TProcess, TArg}"/> class with the specified <paramref name="ownerUserId"/>.
@@ -81,11 +87,12 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
             // TODO
             if (StartupMessage is null) throw new Exception();
 
-            var mes = await StartupMessage.Invoke(Arguments, update).BuildContentAsync(update);
+            var mes = await StartupMessage.Invoke(Arguments, update);
+            var message = await mes.BuildContentAsync(update);
             if (update is SignedCallbackUpdate callback)
-                mes = new EditWrapper(mes, callback.TriggerMessageId);
+                message = new EditWrapper(message, callback.TriggerMessageId);
 
-            await update.Owner.DeliveryService.AnswerSenderAsync(mes, update);
+            await update.Owner.DeliveryService.AnswerSenderAsync(message, update);
         }
 
         /// <summary>
@@ -103,12 +110,15 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
         /// Handles the input update of type <see cref="SignedMessageTextUpdate"/> for the running bot process.
         /// </summary>
         /// <param name="update">The update containing the input for the bot process.</param>
-        public virtual Task HandleInput(SignedMessageTextUpdate update)
+        public virtual async Task HandleInput(SignedMessageTextUpdate update)
         {
-            Arguments.CompleteStatus = update.Text.ToLower() == TerminationalKey.ToLower()
-                ? ProcessCompleteStatus.Canceled
-                : ProcessCompleteStatus.Pending;
-            return Task.CompletedTask;
+            if (update.Text.ToLower() == TerminationalKey.ToLower())
+            {
+                Arguments.CompleteStatus = ProcessCompleteStatus.Canceled;
+                await TerminateAsync(update);
+            }
+            else
+                Arguments.CompleteStatus = ProcessCompleteStatus.Pending;
         }
 
         protected virtual async Task HandleConversionAsync(ConvertResult<TResult> result, SignedMessageTextUpdate update)
@@ -144,12 +154,40 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
             var _pm = update.Owner.ResolveService<IProcessManager>();
             _pm.Terminate(stateful);
 
-            if (ForcedOver is not null && update is SignedMessageTextUpdate text)
-                await ForcedOver.Invoke(Arguments, text);
-
-            if (Confirmation is not null)
+            if (Arguments.CompleteStatus == ProcessCompleteStatus.Canceled)
             {
-                await _pm.Run(Confirmation, Arguments, update).LaunchWith(update);
+                // TODO
+                var mes = new OutputMessageText("Процесс ввода был отменён.")
+                {
+                    Menu = new ReplyCleaner(),
+                };
+                await update.Owner.DeliveryService.AnswerSenderAsync(await mes.BuildContentAsync(update), update);
+            }
+            else if (Arguments.CompleteStatus == ProcessCompleteStatus.Failure)
+            {
+                var mes = new OutputMessageText("Введённые данные содержали ошибку.")
+                {
+                    Menu = new ReplyCleaner(),
+                };
+                await update.Owner.DeliveryService.AnswerSenderAsync(await mes.BuildContentAsync(update), update);
+            }
+            else if (Arguments.CompleteStatus == ProcessCompleteStatus.Pending)
+            {
+                var mes = new OutputMessageText("Процесс ещё не завершён.")
+                {
+                    Menu = new ReplyCleaner(),
+                };
+                await update.Owner.DeliveryService.AnswerSenderAsync(await mes.BuildContentAsync(update), update);
+            }
+            else if (Arguments.CompleteStatus == ProcessCompleteStatus.Success)
+            {
+                if (ForcedOver is not null && update is SignedMessageTextUpdate text)
+                    await ForcedOver.Invoke(Arguments, text);
+
+                if (Confirmation is not null)
+                {
+                    await _pm.Run(Confirmation, Arguments, update).LaunchWith(update);
+                }
             }
         }
     }

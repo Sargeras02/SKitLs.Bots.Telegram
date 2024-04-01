@@ -1,4 +1,5 @@
-﻿using SKitLs.Bots.Telegram.BotProcesses.Prototype;
+﻿using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
+using SKitLs.Bots.Telegram.BotProcesses.Prototype;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
 using SKitLs.Bots.Telegram.Core.Exceptions;
 using SKitLs.Bots.Telegram.Core.Model;
@@ -31,7 +32,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Confirm
         /// <summary>
         /// Represents the startup message content builder for the process.
         /// </summary>
-        public DynamicArg<TResult>? StartupMessage { get; private set; }
+        public DynamicArg<TResult, IOutputMessage>? StartupMessage { get; private set; }
         /// <summary>
         /// Represents the delegate to be invoked when a decision is made in the confirmation process.
         /// </summary>
@@ -45,7 +46,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Confirm
         /// <param name="onDecision">The delegate to be invoked when a decision is made in the confirmation process.</param>
         /// <param name="startupMessage">The startup message content builder for the process (optional).</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="onDecision"/> is null.</exception>
-        public ConfirmationProcess(string processDefId, IUserState processState, ProcessCompletedByCallback<TResult> onDecision, DynamicArg<TResult>? startupMessage = null)
+        public ConfirmationProcess(string processDefId, IUserState processState, ProcessCompletedByCallback<TResult> onDecision, DynamicArg<TResult, IOutputMessage>? startupMessage = null)
         {
             ProcessDefId = processDefId;
             ProcessState = processState;

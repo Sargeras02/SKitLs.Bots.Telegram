@@ -1,6 +1,7 @@
 ﻿using SKitLs.Bots.Telegram.AdvancedMessages.Model;
 using SKitLs.Bots.Telegram.AdvancedMessages.Model.Menus.Inline;
 using SKitLs.Bots.Telegram.AdvancedMessages.Model.Messages.Text;
+using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
 using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation;
 using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation.Model;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype;
@@ -55,7 +56,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Confirm
         /// <summary>
         /// Represents the startup message of the bot process.
         /// </summary>
-        public DynamicArg<TResult>? StartupMessage => Launcher.StartupMessage;
+        public DynamicArg<TResult, IOutputMessage>? StartupMessage => Launcher.StartupMessage;
         /// <summary>
         /// Represents the action that is invoked when the running bot process is completed.
         /// </summary>
@@ -81,11 +82,13 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Confirm
         /// <param name="update">The update to launch the bot process with.</param>
         public async Task LaunchWith<TUpdate>(TUpdate update) where TUpdate : ISignedUpdate
         {
-            var mes = StartupMessage?.Invoke(PendingInstance, update) ?? new OutputMessageText(update.Owner.ResolveBotString(SKBpSettings.DefaultMessageLK));
+            var mes = StartupMessage is not null
+                ? await StartupMessage.Invoke(PendingInstance, update)
+                : new OutputMessageText(update.Owner.ResolveBotString(SKBpSettings.DefaultMessageLK));
             var menu = new InlineMenu(update.Owner);
             menu.Add(update.Owner.ResolveBotString(SKBpSettings.YesLK), Launcher.GetYesCallback());
             menu.Add(update.Owner.ResolveBotString(SKBpSettings.NoLK), Launcher.GetNoCallback());
-            mes.Menu = await menu.BuildContentAsync(update);
+            mes.Menu = menu;
 
             var message = await mes.BuildContentAsync(update);
             if (update is SignedCallbackUpdate callback)

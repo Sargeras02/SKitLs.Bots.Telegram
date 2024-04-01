@@ -1,8 +1,8 @@
 ﻿using SKitLs.Bots.Telegram.BotProcesses.Model.Defaults;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype;
-using SKitLs.Bots.Telegram.Core.Model.DeliverySystem.Prototype;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
-using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting.Signed;
+using SKitLs.Bots.Telegram.Core.DeliverySystem.Prototype;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting;
+using SKitLs.Bots.Telegram.Core.UpdatesCasting.Signed;
 
 namespace SKitLs.Bots.Telegram.BotProcesses.Model
 {
@@ -31,18 +31,21 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model
     /// <param name="update">The <see cref="SignedCallbackUpdate"/> associated with the input process completion.</param>
     public delegate Task ProcessCompletedByCallback<TResult>(TextInputsArguments<TResult> args, SignedCallbackUpdate update) where TResult : notnull;
 
+
+    public delegate Task<TMessage> DynamicArg<TResult, TMessage>(TextInputsArguments<TResult> args, ISignedUpdate update) where TMessage : IBuildableMessage where TResult : notnull;
+
     /// <summary>
     /// Represents a delegate for previewing input data before assigning it.
     /// </summary>
-    /// <typeparam name="IMessage">The type of the message, implementing <see cref="IBuildableMessage"/>.</typeparam>
+    /// <typeparam name="TMessage">The type of the message, implementing <see cref="IBuildableMessage"/>.</typeparam>
     /// <param name="update">The <see cref="SignedMessageTextUpdate"/> to preview the message for.</param>
-    /// <returns>An <typeparamref name="IMessage"/> with previewed error result or <see langword="null"/> if input is valid.</returns>
-    public delegate IMessage? InputPreviewDelegate<IMessage>(SignedMessageTextUpdate update) where IMessage : IBuildableMessage;
+    /// <returns>An <typeparamref name="TMessage"/> with previewed error result or <see langword="null"/> if input is valid.</returns>
+    public delegate Task<TMessage?> InputPreviewDelegate<TMessage>(SignedMessageTextUpdate update) where TMessage : IBuildableMessage;
 
     /// <summary>
     /// Represents a delegate for parsing input from a <see cref="SignedMessageTextUpdate"/> into an object.
     /// </summary>
     /// <param name="update">The <see cref="SignedMessageTextUpdate"/> to parse the input from.</param>
     /// <returns>A parsed object.</returns>
-    public delegate object ParseInputDelegate(SignedMessageTextUpdate update);
+    public delegate Task<object> ParseInputDelegate(SignedMessageTextUpdate update);
 }

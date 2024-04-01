@@ -1,4 +1,5 @@
-﻿using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation;
+﻿using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
+using SKitLs.Bots.Telegram.ArgedInteractions.Argumentation;
 using SKitLs.Bots.Telegram.BotProcesses.Prototype.Processes;
 using SKitLs.Bots.Telegram.Stateful.Prototype;
 
@@ -19,7 +20,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Numbers
         /// <param name="processData">The process's main data.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
-        public IntInputProcess(IST processData, DynamicArg<int> startupMessage, ProcessCompletedByInput<int> overByInput)
+        public IntInputProcess(IST processData, DynamicArg<int, IOutputMessage> startupMessage, ProcessCompletedByInput<int> overByInput)
             : base(processData, startupMessage, overByInput) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="IntInputProcess"/> class with the specified parameters.
@@ -29,7 +30,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Numbers
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByInput">The action that is invoked when the running bot process is completed.</param>
-        public IntInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<int> startupMessage, ProcessCompletedByInput<int> overByInput)
+        public IntInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<int, IOutputMessage> startupMessage, ProcessCompletedByInput<int> overByInput)
             : base(processDefId, processState, terminationalKey, startupMessage, overByInput) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="IntInputProcess"/> class with the specified parameters.
@@ -37,8 +38,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Numbers
         /// <param name="processData">The process's main data.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public IntInputProcess(IST processData, DynamicArg<int> startupMessage, ProcessCompletedByCallback<int> overByCallback)
-            : base(processData, startupMessage, overByCallback) { }
+        public IntInputProcess(IST processData, DynamicArg<int, IOutputMessage> startupMessage, ProcessCompletedByCallback<int> overByCallback, DynamicArg<int, IOutputMessage>? confirmMessage = null)
+            : base(processData, startupMessage, overByCallback, confirmMessage) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="IntInputProcess"/> class with the specified parameters.
         /// </summary>
@@ -47,8 +48,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Numbers
         /// <param name="processState">The state associated with the bot process.</param>
         /// <param name="startupMessage">The startup message of the bot process.</param>
         /// <param name="overByCallback">The action that is invoked when the running bot process is completed.</param>
-        public IntInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<int> startupMessage, ProcessCompletedByCallback<int> overByCallback)
-            : base(processDefId, processState, terminationalKey, startupMessage, overByCallback) { }
+        public IntInputProcess(string processDefId, string terminationalKey, IUserState processState, DynamicArg<int, IOutputMessage> startupMessage, ProcessCompletedByCallback<int> overByCallback, DynamicArg<int, IOutputMessage>? confirmMessage = null)
+            : base(processDefId, processState, terminationalKey, startupMessage, overByCallback, confirmMessage) { }
 
         /// <summary>
         /// Creates new running bot process instance based on the specified user and arguments.

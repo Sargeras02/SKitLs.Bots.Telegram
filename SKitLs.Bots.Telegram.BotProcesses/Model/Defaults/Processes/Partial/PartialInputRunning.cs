@@ -1,4 +1,8 @@
-﻿using SKitLs.Bots.Telegram.BotProcesses.Prototype;
+﻿using SKitLs.Bots.Telegram.AdvancedMessages.Model.Buttons.Reply;
+using SKitLs.Bots.Telegram.AdvancedMessages.Model.Menus.Reply;
+using SKitLs.Bots.Telegram.AdvancedMessages.Prototype;
+using SKitLs.Bots.Telegram.BotProcesses.Prototype;
+using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting;
 using SKitLs.Bots.Telegram.Core.Model.UpdatesCasting.Signed;
 
 namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
@@ -17,6 +21,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// Represents the bot process definition that launched this running process.
         /// </summary>
         public override PartialInputProcess<TResult> Launcher { get; protected set; }
+
+        public bool SkipProcessStartupMessage => Launcher.SkipProcessStartupMessage;
 
         /// <summary>
         /// Gets <see cref="IReadOnlyList{T}"/> that represents internal sub-processes storage.
@@ -37,18 +43,27 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
             Launcher = launcher;
         }
 
+        /// <inheritdoc/>
+        public override async Task LaunchWith<TUpdate>(TUpdate update)
+        {
+            if (!SkipProcessStartupMessage)
+                await base.LaunchWith(update);
+            var mes = (IOutputMessage)Current.StartupMessage.Clone();
+            mes.Menu ??= new ReplyMenu();
+            if (mes.Menu is ReplyMenu reply)
+                mes.Menu = reply + new ReplyMenu(new() { new ReplyButton(TerminationalKey) });
+            var message = await mes.BuildContentAsync(update);
+            await update.Owner.DeliveryService.AnswerSenderAsync(message, update);
+        }
+
         /// <summary>
         /// Handles the input update of type <see cref="SignedMessageTextUpdate"/> for the running bot process.
         /// </summary>
         /// <param name="update">The update containing the input for the bot process.</param>
         public override async Task HandleInput(SignedMessageTextUpdate update)
         {
-            if (update.Text.ToLower() == TerminationalKey.ToLower())
-            {
-                Arguments.CompleteStatus = ProcessCompleteStatus.Canceled;
-                await TerminateAsync(update);
-            }
-            else
+            await base.HandleInput(update);
+            if (Arguments.CompleteStatus == ProcessCompleteStatus.Pending)
             {
                 await Current.HandleInput(update);
             }
@@ -63,8 +78,12 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
             CurrentId++;
             if (CurrentId < SubProcesses.Count)
             {
-                var mes = await Current.StartupMessage.BuildContentAsync(update);
-                await update.Owner.DeliveryService.AnswerSenderAsync(mes, update);
+                var mes = (IOutputMessage)Current.StartupMessage.Clone();
+                mes.Menu ??= new ReplyMenu();
+                if (mes.Menu is ReplyMenu reply)
+                    mes.Menu = reply + new ReplyMenu(new() { new ReplyButton(TerminationalKey) });
+                var message = await mes.BuildContentAsync(update);
+                await update.Owner.DeliveryService.AnswerSenderAsync(message, update);
             }
             else
             {

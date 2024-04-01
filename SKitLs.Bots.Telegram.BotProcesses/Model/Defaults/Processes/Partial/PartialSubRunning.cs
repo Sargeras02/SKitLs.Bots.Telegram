@@ -37,7 +37,7 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// <summary>
         /// Represents the startup message of the sub-process.
         /// </summary>
-        public InputPreviewDelegate<IBuildableMessage>? InputPreview => Launcher.InputPreview;
+        public InputPreviewDelegate<IOutputMessage>? InputPreview => Launcher.InputPreview;
         /// <summary>
         /// Represents the parse input delegate for the sub-process.
         /// </summary>
@@ -65,23 +65,24 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults.Processes.Partial
         /// <param name="update">The update containing the input for the sub-process.</param>
         public async Task HandleInput(SignedMessageTextUpdate update)
         {
-            var exceptionMes = InputPreview?.Invoke(update);
+            var exceptionMes = InputPreview is not null ? await InputPreview.Invoke(update) : null;
             if (exceptionMes is null)
             {
-                try
-                {
-                    var result = ParseInput(update);
-                    HandlingProperty.SetValue(BuildingInstance, result);
-                    await Owner.Valid(update);
-                }
-                catch (Exception)
-                {
-                    // TODO : go message
-                    exceptionMes = new OutputMessageText("todo");
-                }
+                var result = await ParseInput(update);
+                HandlingProperty.SetValue(BuildingInstance, result);
+                await Owner.Valid(update);
+                //try
+                //{
+                //}
+                //catch (Exception e)
+                //{
+                //    // TODO : go message
+                //    exceptionMes = new OutputMessageText(e.Message);
+                //    if (exceptionMes is not null)
+                //        await update.Owner.DeliveryService.AnswerSenderAsync(await exceptionMes.BuildContentAsync(update), update);
+                //}
             }
-
-            if (exceptionMes is not null)
+            else
                 await update.Owner.DeliveryService.AnswerSenderAsync(await exceptionMes.BuildContentAsync(update), update);
         }
     }

@@ -15,6 +15,8 @@ namespace SKitLs.Bots.Telegram.BotProcesses.Model.Defaults
         /// </summary>
         public TResult BuildingInstance { get; set; }
 
+        public object? Metadata { get; set; }
+
         /// <summary>
         /// Represents the completion status of the process associated with this argument.
         /// The default value is <see cref="ProcessCompleteStatus.Pending"/>.
